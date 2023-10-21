@@ -1,7 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-
+import numpy as np
 
 def read_csv_map(path):
     plot_map_list = []
@@ -31,20 +31,19 @@ def is_outside(x, y):
 
 
 def visualize_map(map):
-    rows = len(map)  # amount of rows in plot list
-    cols = len(map[0])  # amount of coloms in plot list
+    rows = len(map)
+    cols = len(map[0])
+
+    map_array = np.array(map)  # Convert the map list to a NumPy array
+
     plt.figure()
-    # Assign color to value: 0 = black, 1 = green, 2 = yellow, 3 = red
     col_map = ListedColormap(['black', 'green', 'yellow'], 'indexed')
-    # Plot grid
-    plt.pcolormesh(map, edgecolors='k', linewidth=2, cmap=col_map)
-    # Fine tune plot layout
-    ax = plt.gca()  # Get current axis object
+    plt.pcolormesh(map_array, edgecolors='k', linewidth=2, cmap=col_map)
+    ax = plt.gca()
     ax.set_yticks(range(0, rows+1, 1))
     ax.set_xticks(range(0, cols+1, 1))
     plt.title(f"Colored grid of size {rows}x{cols}")
     plt.show()
-    return None
 
 
 current_directory = os.getcwd()
@@ -55,3 +54,5 @@ map = read_csv_map(path)
 print(map)
 
 visualize_map(map)
+plt.savefig('map.png')  # Save the plot to a file
+plt.show()  # Display the plot
