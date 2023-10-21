@@ -56,3 +56,13 @@ print(map)
 visualize_map(map)
 plt.savefig('map.png')  # Save the plot to a file
 plt.show()  # Display the plot
+
+def find_start_cor(map):
+    for y in range(len(map)):
+        for x in range(len(map[0])):
+            if map[y][x] == 2:
+                return x, y  # Return the x and y coordinates
+
+x, y = find_start_cor(map)
+print(x, y)
+
