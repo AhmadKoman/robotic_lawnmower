@@ -9,10 +9,11 @@ def read_ground_map(filename):
             ground_map.append(row)
     return ground_map
 
-
+# Get the current working directory
 current_directory = os.getcwd()
 
-filename = os.path.join(current_directory, "/simple/")
+# Provide the relative path to the CSV file
+filename = os.path.join(current_directory, "simple.csv")
 
 hej = read_ground_map(filename)
 print(hej)

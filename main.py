@@ -1,5 +1,4 @@
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
+import os
 import csv
 def plot_map(rows, cols):
     path = "/simple.csv"
