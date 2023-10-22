@@ -50,3 +50,19 @@ Document the changes made to your code to support multiple simulations and impro
 Explain the rationale behind the enhancements and how they affect coverage.
 Present the results of your experiments, including any visualizations and statistical analysis.
 Provide a clear and well-organized report with detailed explanations of your work.
+
+
+
+
+To do list:
+1. Read and visualize the ground map. Start with map simple.csv 
+2. Convert map to x,y coordinate system, origo in lower left corner 
+3. Implement is_outside(x,y) ⇒ True if x,y outside map or in obstacle 
+4. Prepare trace ⇒ compute x0,y0, vx0,vy0, steps (steps to be taken) 
+5. Implement support for generating random velocities 
+6. Implement one_step(x,y,vx,vy) ⇒ new x,y,vx,vy after one step 
+7. Compute and visualize trace (start with just a few steps) ⇒ Grade E 
+8. Setup coverage grid ⇒ each ground square divided in N × N pixels 
+9. Convert trace to coverage ⇒ Grade C 
+10. Start writing the report 
+11. Try grade A,B if time permits
