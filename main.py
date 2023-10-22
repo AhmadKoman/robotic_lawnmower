@@ -64,5 +64,5 @@ def find_start_cor(map):
                 return x, y  # Return the x and y coordinates
 
 x, y = find_start_cor(map)
-print(x,",", y)
+print(f"({x},{y})")
 
