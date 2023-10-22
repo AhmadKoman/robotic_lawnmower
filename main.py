@@ -65,36 +65,35 @@ def find_start_cor(map):
             if map[y][x] == 2:
                 return x, y  # Return the x and y coordinates
 
-x, y = find_start_cor(map)
-print(f"({x},{y})")
-
-x = [n/10 for n in range(0, 100)]
-y = [math.sin(i) for i in x]
-plt.plot(x, y)    # Deafult, lines connecting the dots
-plt.show()
-
-x = [n/4 for n in range(0, 40)]
-y1 = [math.sin(i) for i in x]
-y2 = [math.cos(i) for i in x]
-plt.plot(x, y1, 'ro')      # ro ==> red circles
-plt.plot(x, y2, 'b+')      # b+ ==> blue plus
-plt.title('Sinus and cosinus')
-plt.xlabel('x in range 0 to 10')
-plt.ylabel('sin(x) as red, cos(x) as blue')
-plt.show()
+x0, y0 = find_start_cor(map)
+print(f"({x0},{y0})")
 
 
-fig, (ax1, ax2) = plt.subplots(1, 2)  # Two plots called ax1 and ax2
-x = [n for n in range(0, 20)]
-y = [i**5 for i in x]
 
-ax1.plot(x, y)
-ax1.set_xlabel('n in range 0 to 20')
-ax1.set_ylabel('n^5')
-ax1.set_title('n vs n^5, non-logarithmic y-axis')
-ax2.plot(x, y)
-ax2.set_xlabel('n in range 0 to 20')
-ax2.set_ylabel('n^5')
-ax2.set_title('n vs n^5, logarithmic y-axis')
-ax2.set_yscale('log')
-plt.show()
+def calculate_velocity(xi, yi, x_dest, y_dest, speed):
+    # Calculate the direction vector from (xi, yi) to (x_dest, y_dest)
+    dx = x_dest - xi
+    dy = y_dest - yi
+
+    # Calculate the magnitude of the direction vector
+    direction_magnitude = math.sqrt(dx**2 + dy**2)
+
+    # Normalize the direction vector to obtain velocity components
+    if direction_magnitude > 0:
+        vx = (speed / direction_magnitude) * dx
+        vy = (speed / direction_magnitude) * dy
+    else:
+        # If the current position is the same as the destination, stop
+        vx, vy = 0, 0
+
+    return vx, vy
+
+# Example usage:
+xi, yi = 3.0, 0.0  # Current position (robot start position)
+x_dest, y_dest = 6.0, 3.0  # Destination position (where you want to move next)
+speed = 0.3  # Robot speed in m/s
+
+vx, vy = calculate_velocity(xi, yi, x_dest, y_dest, speed)
+print(f"vx: {vx}, vy: {vy}")
+
+
