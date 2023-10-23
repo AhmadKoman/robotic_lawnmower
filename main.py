@@ -73,42 +73,38 @@ def get_velocity():
     vy = v * math.sin(alpha)
     return vx, vy
 
-dt = 0.1
-def one_step(x, y, vx, vy, x_min, x_max, y_min, y_max):
-    while True:
-        # Update the position using the velocity components
-        new_x = x + vx * dt
-        new_y = y + vy * dt
-
-        # Check if the new position is outside the boundaries
-        if x_min <= new_x < x_max and y_min <= new_y < y_max:
-            return new_x, new_y, vx, vy
-
-        # The mower hit a boundary, so bounce with a limited random angle
-        angle = random.uniform(-math.pi / 4, math.pi / 4)  # Limit angle within -45 to 45 degrees
-        speed = 0.3  # Constant speed
-        vx = speed * math.cos(angle)  # Apply the random angle
-        vy = speed * math.sin(angle)  # Apply the random angle
-
-x0, y0 = find_start_cor(map)
-vx, vy = get_velocity()
-
-# Define the boundaries of the map
-x_min = 0
-x_max = len(map[0])
-y_min = 0
-y_max = len(map)
-
-# Simulation loop
-while not is_outside(x0, y0):
-    # Update the position using the one_step function
-    x0, y0, vx, vy = one_step(x0, y0, vx, vy, x_min, x_max, y_min, y_max)
-    print(f"Position: ({x0:.2f}, {y0:.2f}) Velocity: ({vx:.2f}, {vy:.2f})")
+dt = 0.5
 
 
 
 x0, y0 = find_start_cor(map)
 print(f"({x0},{y0})")
-vx,vy=get_velocity()
+vx,vy = get_velocity()
 print(vx, vy)
+
+def bounce(vx, vy):
+    alpha = random.uniform(0, 2 * math.pi)
+    new_vx = 0.3 * math.cos(alpha)
+    new_vy = 0.3 * math.sin(alpha)
+    return new_vx, new_vy
+
+def one_step(x, y, vx, vy, dt):
+    x_ny = x + (vx * dt)
+    y_ny = y + (vy * dt)
+    
+    if not is_outside(x_ny, y_ny):
+        x, y = x_ny, y_ny
+        print(f"({x}, {y})")
+    else:
+        vx, vy = bounce(vx, vy)
+    
+    return x, y, vx, vy
+
+while True:
+    x0, y0, vx, vy = one_step(x0, y0, vx, vy, dt)
+
+    # Visualize the updated position (you can modify this part)
+    visualize_map(map)  # You can add markers to show the robot's position
+    plt.pause(0.1)
+
 
