@@ -101,30 +101,29 @@ def one_step(x, y, vx, vy, dt):
     return x, y, vx, vy
 
 
-time_limit = 20  # 10 minutes (adjust as needed)
+time_limit = 15  # 10 minutes (adjust as needed)
 
-# Define the grid size for the coverage map
-coverage_grid_size = 5  # Each square meter divided into a 5x5 grid
+# Load the map from the "simple.csv" file
+current_directory = os.getcwd()
+path = os.path.join(current_directory, "simple.csv")
+map = read_csv_map(path)
 
-def update_coverage_map(coverage_map, x, y):
-    coverage_map[y][x] += 1
+# Determine the grid size for the coverage map
+coverage_rows = len(map)
+coverage_cols = len(map[0])
 
-def calculate_coverage_percentage(coverage_map):
-    total_pixels = coverage_map.size
-    visited_pixels = np.count_nonzero(coverage_map)
-    coverage_percentage = (visited_pixels / total_pixels) * 100
-    return coverage_percentage
+def update_coverage_map(coverage_map, x, y, prev_x, prev_y):
+    if x != prev_x or y != prev_y:
+        coverage_map[min(y, prev_y):max(y, prev_y) + 1, min(x, prev_x):max(x, prev_x) + 1] = 1
 
-# Create the coverage map with the same dimensions as the map, divided into a grid
-coverage_rows = len(map) * coverage_grid_size
-coverage_cols = len(map[0]) * coverage_grid_size
+# Create the coverage map as a binary grid (0 or 1)
 coverage_map = np.zeros((coverage_rows, coverage_cols), dtype=int)
-
-# Create a list to store the robot's trace
-trace = []
 
 # Get the start time
 start_time = time.time()
+
+x0, y0 = find_start_cor(map)
+prev_x, prev_y = x0, y0
 
 # Continue until the time limit is reached or coverage is complete
 while True:
@@ -133,32 +132,23 @@ while True:
     if elapsed_time >= time_limit:
         break
 
-    x0, y0, vx, vy = one_step(x0, y0, vx, vy, dt)
+    vx, vy = get_velocity()
+    x0, y0 = one_step(x0, y0, vx, vy, time_limit)
     
-    x_pixel, y_pixel = int(x0 * coverage_grid_size), int(y0 * coverage_grid_size)
+    x_pixel, y_pixel = int(x0), int(y0)
     if 0 <= x_pixel < coverage_cols and 0 <= y_pixel < coverage_rows:
-        update_coverage_map(coverage_map, x_pixel, y_pixel)
+        update_coverage_map(coverage_map, x_pixel, y_pixel, prev_x, prev_y)
     
-    trace.append((x0, y0))  # Update the trace list with the current position
+    prev_x, prev_y = x_pixel, y_pixel
 
     plt.figure()
-    plt.imshow(coverage_map, cmap='hot', origin='upper', aspect='equal')
+    plt.imshow(coverage_map, cmap=ListedColormap(['white', 'blue']), origin='upper', aspect='equal')
     plt.title("Coverage Map")
-    plt.savefig("c.png")
     plt.pause(0.1)
-
-# Calculate the coverage percentage
-coverage_percentage = calculate_coverage_percentage(coverage_map)
-print(f"Coverage Percentage: {coverage_percentage:.2f}%")
 
 # Save the final coverage map as an image
 plt.figure()
-plt.imshow(coverage_map, cmap='hot', origin='upper', aspect='equal')
+plt.imshow(coverage_map, cmap=ListedColormap(['white', 'blue']), origin='upper', aspect='equal')
 plt.title("Final Coverage Map")
 plt.savefig("final_coverage_map.png")
 plt.show()
-
-# Save the trace list to a file
-with open("robot_trace.txt", "w") as trace_file:
-    for point in trace:
-        trace_file.write(f"{point[0]}, {point[1]}\n")
